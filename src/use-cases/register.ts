@@ -1,34 +1,31 @@
-import { hash } from 'bcryptjs';
-import { UsersRepository } from '../repositories/users-repository';
-import { UserAlreadyExistsError } from './errors/user-already-exists-error';
+import { hash } from "bcryptjs";
+import { UsersRepository } from "../repositories/users-repository";
+import { UserAlreadyExistsError } from "./errors/user-already-exists-error";
 
-interface RegisterUseCaseRequest{
-  name:string,
-  email:string,
-  password:string
+interface RegisterUseCaseRequest {
+  name: string;
+  email: string;
+  password: string;
 }
 
-export class RegisterUseCase{
+export class RegisterUseCase {
+  private usersRepository: UsersRepository;
 
-  private usersRepository:UsersRepository
-
-  constructor(usersRepository:UsersRepository){
-    this.usersRepository=usersRepository
+  constructor(usersRepository: UsersRepository) {
+    this.usersRepository = usersRepository;
   }
 
-  async execute({name,email,password}:RegisterUseCaseRequest){
+  async execute({ name, email, password }: RegisterUseCaseRequest) {
+    const userWithSameEmail = await this.usersRepository.findByEmail(email);
 
-    const userWithSameEmail = await this.usersRepository.findByEmail(email)
-  
-    if(userWithSameEmail){
-      throw new UserAlreadyExistsError()
+    if (userWithSameEmail) {
+      throw new UserAlreadyExistsError();
     }
-  
-    password = await hash(password,6)
-  
-  
-    await this.usersRepository.create({name,email,password})
-    
+
+    password = await hash(password, 6);
+
+    const user = await this.usersRepository.create({ name, email, password });
+
+    return { user }
   }
 }
-
