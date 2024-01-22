@@ -1,9 +1,10 @@
 import request from "supertest";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { describe } from "node:test";
+import { afterAll, beforeAll, expect, it } from "vitest";
 import { app } from "../../../app";
 import { createAndAuthenticateUser } from "../../../utils/test/create-and-authenticate-user";
 
-describe("Search Gyms (e2e)", () => {
+describe("Nearby Gyms (e2e)", () => {
   beforeAll(async () => {
     await app.ready();
   });
@@ -12,8 +13,9 @@ describe("Search Gyms (e2e)", () => {
     await app.close();
   });
 
-  it("should be able to search gyms by title", async () => {
-    const { token } = await createAndAuthenticateUser(app,true);
+  it("should be able list nearby gyms", async () => {
+    const { token } = await createAndAuthenticateUser(app);
+
     await request(app.server)
       .post("/gyms")
       .set("Authorization", `Bearer ${token}`)
@@ -32,16 +34,14 @@ describe("Search Gyms (e2e)", () => {
         title: "TypeScript Gym",
         description: "Some description.",
         phone: "1199999999",
-        latitude: -27.2092052,
-        longitude: -49.6401091,
+        latitude: -27.0610928,
+        longitude: -49.5229501,
       });
 
     const response = await request(app.server)
-      .get("/gyms/search")
-      .query({
-        q: "JavaScript",
-      })
+      .get("/gyms/nearby")
       .set("Authorization", `Bearer ${token}`)
+      .query({ latitude: -27.2092052, longitude: -49.6401091 })
       .send();
 
     expect(response.statusCode).toEqual(200);

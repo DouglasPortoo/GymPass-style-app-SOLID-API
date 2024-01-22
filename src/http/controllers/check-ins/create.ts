@@ -30,5 +30,5 @@ export async function create(req: FastifyRequest, reply: FastifyReply) {
     userId: user_id,
   });
 
-  return reply.status(200);
+  return reply.status(201).send();
 }
