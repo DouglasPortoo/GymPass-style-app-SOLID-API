@@ -8,8 +8,8 @@ import { verifyUserRole } from "../../../middleware/verify-user-role";
 export async function gymsRoutes(app: FastifyInstance) {
 // app.addHook('onRequest',veryfyJwt)
 
-app.post("/gyms", { onRequest: [veryfyJwt] },create)
+app.post("/gyms", { onRequest: [veryfyJwt,verifyUserRole("ADMIN")] },create)
 
-app.get("/gyms/nearby",{ onRequest: [veryfyJwt] },nearby)
-app.get("/gyms/search",{ onRequest: [veryfyJwt] }, search)
+app.get("/gyms/nearby",{ onRequest: [veryfyJwt,verifyUserRole("ADMIN")] },nearby)
+app.get("/gyms/search",{ onRequest: [veryfyJwt,verifyUserRole("ADMIN")] }, search)
 }

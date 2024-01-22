@@ -14,5 +14,5 @@ export async function checkInsRoutes() {
   app.get("/check-ins/history",{ onRequest: [veryfyJwt] }, history);
   app.get("/check-ins/metrics",{ onRequest: [veryfyJwt] }, metrics);
 
-  app.patch('/check-ins/:checkInId/validate',{ onRequest: [veryfyJwt] }, validate)
+  app.patch('/check-ins/:checkInId/validate',{ onRequest: [veryfyJwt,verifyUserRole("ADMIN")] }, validate)
 }

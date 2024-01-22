@@ -5,14 +5,14 @@ import { hash } from "bcryptjs";
 
 export async function createAndAuthenticateUser(
   app: FastifyInstance,
-  
+  isAdmin = false,
 ) {
   await prisma.user.create({
     data: {
       name: 'John Doe',
       email: 'johndoe@email.com',
       password: await hash('123456', 6),
-      role:'ADMIN' 
+      role: isAdmin ? 'ADMIN' : 'MEMBER', 
     },
   })
 
